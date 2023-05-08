@@ -1,4 +1,4 @@
-# Nodejs Web Server Lite
+# Nodejs Native Web Server
 
 This is a Web Server implemented using Node's native [HTTP module](https://nodejs.org/api/http.html).
 
