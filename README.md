@@ -1,12 +1,12 @@
 # Nodejs Web Server Lite
 
-This is a Web Server implemented using Node's native HTTP module.
+This is a Web Server implemented using Node's native [HTTP module](https://nodejs.org/api/http.html).
 
 ## Usage
 
 To use this web server follow the instructions below:
 
-1. Install Nodejs
+1. Install [Nodejs](https://nodejs.org/en)
 2. Clone this repository
 2. Open a terminal at the location of the `server.js` file on your machine and issue the command `node server`.
 4. Open a web browser on your machine and navigate to `127.0.0.1:8080`.
