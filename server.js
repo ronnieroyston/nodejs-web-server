@@ -3,7 +3,6 @@ const http = require('node:http');
 const path = require('node:path');
 const PORT = 8080;
 const RELATIVE_ROOT_DIRECTORY = './public';
-const PROTOCOL = 'https';
 const HEADERS = {
   'Access-Control-Allow-Origin': '*',
   'X-Frame-Options': 'DENY',
