@@ -7,7 +7,7 @@ This is a Web Server implemented using Node's native [HTTP module](https://nodej
 To use this web server follow the instructions below:
 
 1. Install [Nodejs](https://nodejs.org/en).
-2. Clone this repository.
+2. Clone this repository to your machine.
 2. Open a terminal at the location of the `server.js` file on your machine and issue the command `node server`.
 4. Open a web browser on your machine and navigate to `127.0.0.1:8080`.
 5. The server must be restarted after adding new subdirectories under the `/public` root folder.
