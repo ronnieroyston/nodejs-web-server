@@ -1,20 +1,34 @@
-import * as name from "module-name";
-import * as fs from "node:fs";
-import * as http from "node:http";
-import * as path from "node:path";
+/*
+ * @license
+ * Copyright 2023 Ronnie Royston All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+*/
 
-// const fs = require('node:fs');
-// const http = require('node:http');
-// const path = require('node:path');
-const PORT = 8080;
-const RELATIVE_ROOT_DIRECTORY = './public';
+import fs from "node:fs";
+import http from "node:http";
+import path from "node:path";
+import url from 'node:url';
+
+const DIRECTORIES = [];
+const DIR_NAME = path.dirname(url.fileURLToPath(import.meta.url));
 const HEADERS = {
   'Access-Control-Allow-Origin': '*',
   'X-Frame-Options': 'DENY',
   'X-Content-Type-Options': 'nosniff',
   'Referrer-Policy': 'strict-origin-when-cross-origin',
   'Strict-Transport-Security': 'max-age=63072000; includeSubDomains; preload'
-}
+};
 const MIME_TYPES = {
   default: 'application/octet-stream',
   aac: 'audio/aac',
@@ -62,39 +76,15 @@ const MIME_TYPES = {
   xml: 'application/xml',
   zip: 'application/zip'
 };
-
-//get relative paths for all hosted directories so we can direct requests to respective index.html
-const ROOT_PATH = path.join(__dirname, RELATIVE_ROOT_DIRECTORY);
+const PORT = 8080;
+const RELATIVE_ROOT_DIRECTORY = './public';
+const ROOT_PATH = path.join(DIR_NAME, RELATIVE_ROOT_DIRECTORY);
 const ROOT_PATH_DIRECTORIES = getDirectoriesRecursive(ROOT_PATH);
 const ROOT_PATH_DEPTH = ROOT_PATH.split(path.sep).length;
-const DIRECTORIES = [];
-ROOT_PATH_DIRECTORIES.forEach(function(directory){
-  let posixPath = directory.split(path.sep).join(path.posix.sep);
-  let fullPathArray = posixPath.split(path.posix.sep);
-  let relativePathArray = fullPathArray.slice(ROOT_PATH_DEPTH);
-  DIRECTORIES.push(path.posix.join(path.posix.sep,...relativePathArray))
-})
-
-async function pathBuilder (url) {
-  const pathParts = [ROOT_PATH, url];
-  DIRECTORIES.forEach(function(directory){ //add index.html to URLs pointing to directories
-    if(url === directory){
-      pathParts.push('index');
-    }
-  })
-  let filePath = path.join(...pathParts);
-  if(!path.extname(filePath)){ //add .html to URLs with no file extension
-    filePath = filePath + '.html';
-  }
-  const ext = path.extname(filePath).substring(1).toLowerCase();
-  let stream = fs.createReadStream(filePath);
-  return { ext, stream };
-};
-
-http.createServer(async function(request, response) {
-  let file = await pathBuilder(request.url);
+const SERVER = http.createServer(async function(request, response) {
+  let file = await fileNameBuilder(request.url);
   let statusCode = 200;
-  const mimeType = MIME_TYPES[file.ext] || MIME_TYPES.default;
+  let mimeType = MIME_TYPES[file.ext] || MIME_TYPES.default;
   file.stream.pipe(response);
   file.stream.on('open',function() {
     response.writeHead(statusCode, Object.assign({}, HEADERS, {'Content-Type': mimeType}));
@@ -109,20 +99,56 @@ http.createServer(async function(request, response) {
     response.end();
   });
   response.on('finish', () => {
-    console.log(`${request.headers.host} ${request.method} ${request.url} ${statusCode}`);
+    if(statusCode === 404){
+      console.log('\x1b[31m%s\x1b[0m',`${request.headers.host} ${request.method} ${request.url} ${statusCode}`);
+    } else {
+      console.log(`${request.headers.host} ${request.method} ${request.url} ${statusCode}`);
+    }
   });
-}).listen(PORT);
+});
+
+(async function () {
+    try {
+      //identify all hosted directories so we can add append index.html
+      ROOT_PATH_DIRECTORIES.forEach(function(directory){
+        let posixPath = directory.split(path.sep).join(path.posix.sep);
+        let fullPathArray = posixPath.split(path.posix.sep);
+        let relativePathArray = fullPathArray.slice(ROOT_PATH_DEPTH);
+        DIRECTORIES.push(path.posix.join(path.posix.sep,...relativePathArray))
+      });
+      await SERVER.listen(PORT);
+      console.log(`Server running at http://127.0.0.1:${PORT}/`);
+    } catch(e) {
+      console.log(`Server failed to start. ${e}`);
+    }
+})();
+
+async function fileNameBuilder (url) {
+  const PATH_PARTS_ARRAY = [ROOT_PATH, url];
+  DIRECTORIES.forEach(function(directory){ //add index.html to URLs pointing to directories
+    if(url === directory){
+      PATH_PARTS_ARRAY.push('index');
+    }
+  })
+  let filePath = path.join(...PATH_PARTS_ARRAY);
+  if(!path.extname(filePath)){ //add .html to URLs with no file extension
+    filePath = filePath + '.html';
+  }
+  let ext = path.extname(filePath).substring(1).toLowerCase();
+  let stream = fs.createReadStream(filePath);
+  return { ext, stream };
+}
 
 function flatten(lists) {
   return lists.reduce((a, b) => a.concat(b), []);
 }
+
 function getDirectories(srcpath) {
   return fs.readdirSync(srcpath)
     .map(file => path.join(srcpath, file))
     .filter(path => fs.statSync(path).isDirectory());
 }
+
 function getDirectoriesRecursive(srcpath) {
   return [srcpath, ...flatten(getDirectories(srcpath).map(getDirectoriesRecursive))];
 }
-
-console.log(`Server running at http://127.0.0.1:${PORT}/`);
