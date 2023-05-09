@@ -16,6 +16,6 @@ To use this web server follow the instructions below:
 
 The server assumes a `/public` directory exists in the location of the Node script and that all HTML files include the `.html` file extension. This `/public` directory is the root directory of the web server. Subdirectories under the root directory are each assumed to have an `.index.html` file.
 
- - Calls to directories have `/index.html` added to the URL.
+ - Calls to the root directory and its subdirectories read from the `index.html` at that path.
  - Calls without a file extension have `.html` added to the URL.
 
