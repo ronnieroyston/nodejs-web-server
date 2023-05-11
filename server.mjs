@@ -1,24 +1,15 @@
 /*
  * @license
- * Copyright 2023 Ronnie Royston All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * "Node Web Server"
+ * Ronnie Royston (https://ronnieroyston.com)
+ * Creative Commons License BY 4.0 (http://creativecommons.org/licenses/by/4.0/)
 */
 
 import fs from "node:fs";
 import http from "node:http";
 import path from "node:path";
 import url from 'node:url';
+import { Doc } from './doc.mjs';
 
 const DIRECTORIES = [];
 const DIR_NAME = path.dirname(url.fileURLToPath(import.meta.url));
@@ -77,32 +68,40 @@ const MIME_TYPES = {
   zip: 'application/zip'
 };
 const PORT = 8080;
-const RELATIVE_ROOT_DIRECTORY = './public';
-const ROOT_PATH = path.join(DIR_NAME, RELATIVE_ROOT_DIRECTORY);
+const ROOT_DIRECTORY = './public';
+const ROOT_PATH = path.join(DIR_NAME, ROOT_DIRECTORY);
 const ROOT_PATH_DIRECTORIES = getDirectoriesRecursive(ROOT_PATH);
 const ROOT_PATH_DEPTH = ROOT_PATH.split(path.sep).length;
 const SERVER = http.createServer(async function(request, response) {
-  let file = await fileNameBuilder(request.url);
   let statusCode = 200;
-  let mimeType = MIME_TYPES[file.ext] || MIME_TYPES.default;
-  file.stream.pipe(response);
-  file.stream.on('open',function() {
-    response.writeHead(statusCode, Object.assign({}, HEADERS, {'Content-Type': mimeType}));
-  });
-  file.stream.on('end',function() {
-    response.end();
-  });
-  file.stream.on('error',function(err) {
-    statusCode = 404;
-    response.statusCode = statusCode;
-    response.write("Resource Not Found");
-    response.end();
-  });
+  if(request.url === '/app') {
+    
+    let doc = await new Doc({'main':'app'}).build();
+    
+    response.end(doc);    
+  } else {
+    let file = await fileNameBuilder(request.url);
+    let mimeType = MIME_TYPES[file.ext] || MIME_TYPES.default;
+    file.stream.pipe(response);
+    file.stream.on('open',function() {
+      response.writeHead(statusCode, Object.assign({}, HEADERS, {'Content-Type': mimeType}));
+    });
+    file.stream.on('end',function() {
+      response.end();
+    });
+    file.stream.on('error',function(err) {
+      statusCode = 404;
+      response.statusCode = statusCode;
+      response.write("Resource Not Found");
+      response.end();
+    });
+  }
   response.on('finish', () => {
     if(statusCode === 404){
-      console.log('\x1b[31m%s\x1b[0m',`${request.headers.host} ${request.method} ${request.url} ${statusCode}`);
+      //console.log('\x1b[31m%s\x1b[0m',`${request.headers.host} ${request.method} ${request.url} ${statusCode}`);
+      console.log(`${request.headers.host} ${request.method} ${request.url}`,`\x1b[31m${statusCode}\x1b[0m`);
     } else {
-      console.log(`${request.headers.host} ${request.method} ${request.url} ${statusCode}`);
+      console.log(`${request.headers.host} ${request.method} ${request.url} \x1b[32m${statusCode}\x1b[0m`);
     }
   });
 });
@@ -117,9 +116,9 @@ const SERVER = http.createServer(async function(request, response) {
         DIRECTORIES.push(path.posix.join(path.posix.sep,...relativePathArray))
       });
       await SERVER.listen(PORT);
-      console.log(`Server running at http://127.0.0.1:${PORT}/`);
+      console.log('\x1b[32m%s\x1b[0m',`Server running at http://127.0.0.1:${PORT}/`);
     } catch(e) {
-      console.log(`Server failed to start. ${e}`);
+      console.log('\x1b[31m%s\x1b[0m',`Server failed to start. ${e}`);
     }
 })();
 

@@ -1,55 +1,69 @@
-<!doctype html>
-<html lang="en">
-<head>
+<!DOCTYPE html><html lang="en" prefix="og: http://ogp.me/ns#"><head>
   <meta charset="utf-8">
   <title>Basic Web Page</title>
   <meta name="description" content="Basic Web Page">
   <meta name="author" content="Ronnie Royston">
-  <link rel="icon" type="image/x-icon" href="/media/favicon.ico">
+  <link rel="icon" type="image/x-icon" href="/media/logo-48x48.png">
   <link rel="stylesheet" href="style.css">
   <!--[if lt IE 9]>
   <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
   <![endif]-->
-</head>
-<body>
-  <header>
-    <nav>
-      <div>
-        <a href="/"><img src="/media/logo.png" height="36" alt="Basic Web Page">
-		  Basic Web Page
-		</a>
-      </div>
-      <div>
-        <a href="/identity">
-		  Sign In
-		</a>
-      </div>
-    </nav>  
-  </header>
+</head><body><header>
   <nav>
-    <ul>
-      <li><a href="#">Link 1</a></li>
-	  <li><a href="#">Link 2</a></li>
-	  <li><a href="#">Link 3</a></li>
-	  <li><a href="#">Link 4</a></li>
-	</ul>
-  </nav>
-  <main>
-    <h3>This is a webpage!</h3>
-	<section>
-
-	</section>
-  </main>
-  <aside>
-    <p>
-	  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    <div>
+      <a href="/"><img src="/media/logo.png" height="56" alt="logo">
+        &nbsp; Node Web Server
+      </a>
+    </div>
+    <div>
+      <a href="/identity">
+    Sign In
+  </a>
+    </div>
+  </nav>  
+</header><nav>
+  <ul>
+    <li><a href="/app">App</a></li>
+  </ul>
+</nav><aside>
+  <h4>What Is Node.js?</h4>
+  <figure style="margin: 0">
+  <blockquote style="margin: 0">
+  <p>
+    Node.js® is a cross-platform, open-source server environment that can run on Windows, Linux, Unix, macOS, and more. Node.js is a back-end JavaScript runtime environment, runs on the <a href="https://v8.dev/">V8 JavaScript Engine</a><a>, and executes JavaScript code outside a web browser.
+  </a></p><a>
+  <p>
+    Node.js lets developers use JavaScript to write command line tools and for server-side scripting. The ability to run JavaScript code on the server is often used to generate dynamic web page content before the page is sent to the user's web browser. Consequently, Node.js represents a "JavaScript everywhere" paradigm.
+  </p>
+  </a></blockquote><a>
+  </a><figcaption><a>
+    <cite>- </cite></a><a href="https://en.wikipedia.org/wiki/Node.js">Wikipedia</a> Introduction to Node.js
+  </figcaption>
+</figure>
+</aside><main>
+	<h1>Node Web Server</h1>
+	<p>
+		Create your own website using this lightweight minimal server that has been pre programmed in a sensible and intuitive configuration. This server can easily be uploaded to your favorite cloud computing provider where it will run for dollars per year and maybe even for free depending on the provider.
 	</p>
-  </aside>
-  <footer>
-    <p>
-	  Powered by Node.js
+	<h2>The World Wide Web</h2>
+	<h3>How It Works</h3>
+	<p>
+		Websites work in a client / server fashion where the client is a web browser, or browser, and the server is a web server. When you visit a web page a server sends a file to your browser which then renders the page on your screen. Websites have unique addresses called domain names. Wikipedia.com is a domain name. Anyone can purchase a domain name for a small fee, usually $10/yr. The domain name provider is given the machine address of your server which it then shares with anyone who calls your domain name.
 	</p>
-  </footer>
-  <script src="script.js"></script>
-</body>
-</html>
+	<p>
+		HTML is the standard markup language for documents designed to be displayed in a browser. Browsers utilize two other technologies - Cascading Style Sheets, CSS, and a scripting language called JavaScript. A web page is a simple text file that is opened in a browser. For example, if you right click on this page and choose 'View Page Source' you will see the text file that your browser reads to render this page. HTML defines a set of tags that browsers interpret. For example the &lt;h1&gt; tag means "this is a header" in the HTML standard. If the text file does not follow the rules of HTML the browser will display an error.
+	</p>
+	<h3>Pre Built Static HTML</h3>
+	<p>
+		Sections of web pages such as headers and footers are often the same across pages. Website creators can use template systems to generate the HTML files stored on their server. The HTML file rendered on this web page is stored on the server as index.html. Static HTML files load faster than web pages that are assembled on the fly by the server.
+	</p>
+	<h3>Dynamically Created HTML</h3>
+	<p>
+		The <a href="/app">/app</a> web page is assembled from disparate files on the fly by the server and then sent to your browser as a single HTML file in response to you visiting the page. In other words there is no app.html file stored on the server. Instead, there is a header.html, main.html, and footer.html file. Both the server and the web browser can dynamically assemble web pages on the fly using JavaScript. JavaScript can fetch content both locally and from remote servers in response to events.
+	</p>
+</main>
+ <footer>
+  <p>
+  Powered by Node.js
+  </p>
+</footer><script src="script.js"></script></body></html>
