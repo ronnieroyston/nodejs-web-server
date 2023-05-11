@@ -52,10 +52,9 @@ class Doc {
     this.doc.querySelector("body").appendChild(script);
     let finish = Date.now();
     let qty = finish - this.start;
-    let text = `Server Assembled HTML File in ${qty} Milliseconds`;
     let timeElement = this.doc.querySelector("#time");
     if(timeElement){
-      timeElement.textContent = text;
+      timeElement.textContent = qty;
     }
     return this.dom.serialize();
   }
