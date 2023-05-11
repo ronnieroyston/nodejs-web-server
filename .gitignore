@@ -1,0 +1,6 @@
+dbdata/
+node_modules/
+logs/
+*.key
+*.crt
+*.env
